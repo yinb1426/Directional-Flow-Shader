@@ -53,6 +53,6 @@
 | FoamMaxEdge | Range(0, 1) | 显示泡沫的最高高度 | 0.5 |
 | FoamBlend | Range(0, 1) | 和水体颜色的混合程度 | 0.7 |
 ## 参考
-> https://www.youtube.com/watch?v=XCvaH7nRDmg
-> https://onlinelibrary.wiley.com/doi/full/10.1111/cgf.13669
-> https://catlikecoding.com/unity/tutorials/flow/directional-flow/
+* https://www.youtube.com/watch?v=XCvaH7nRDmg
+* https://onlinelibrary.wiley.com/doi/full/10.1111/cgf.13669
+* https://catlikecoding.com/unity/tutorials/flow/directional-flow/
