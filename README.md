@@ -17,7 +17,7 @@
 > 之后的参数说明将以Directional Flow Shader为例
 ## 参数
 **常规及贴图**：
-| 参数 | 类型 | <center> 说明 | 建议参考值 |
+| 参数 | 类型 | <center>说明</center> | 建议参考值 |
 | :------: | :------: | :------ | :------: |
 | DisplacementMap | 2D | 平面波浪高度的位移贴图 | |
 | NormalMap | 2D | 平面波浪高度位移贴图对应的法线贴图 | |
@@ -26,14 +26,14 @@
 | WaterHeightTexture | 2D | 水深贴图 (也可以使用CG方法获取水深) | |
 
 **水体颜色与水深**：
-| 参数 | 类型 | <center> 说明 | 建议参考值 |
+| 参数 | 类型 | <center>说明</center> | 建议参考值 |
 | :------: | :------: | :------ | :------: |
 | WaterShallowColor | Color | 浅水颜色 | (4, 93, 111, 170) |
 | WaterDeepColor | Color | 深水颜色 |  (78, 110, 133, 240) |
 | DepthDensity | Float | 调节水深的系数，用于更好地显示水体颜色 | 1 |
 
 **波浪参数**：
-| 参数 | 类型 | <center> 说明 |
+| 参数 | 类型 | <center>说明</center> |
 | :------: | :------: | :------ |
 | GridResolution | Float | 水面细分网格大小 |
 | WavePeriod | Float | 控制位移贴图(三角函数)的周期 |
@@ -46,7 +46,7 @@
     * (50, 2.54, 4.2, 0.265)
 
 **浪尖泡沫**：
-| 参数 | 类型 | <center> 说明 | 建议参考值 |
+| 参数 | 类型 | <center>说明</center> | 建议参考值 |
 | :------: | :------: | :------ | :------: |
 | FoamTexture | 2D | 泡沫纹理 | Tiling = 300X300 | 
 | FoamMinEdge | Range(0, 1) | 显示泡沫的最低高度 | 0.3 |
