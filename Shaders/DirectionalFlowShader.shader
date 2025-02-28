@@ -18,25 +18,25 @@ Shader "Unlit/DirectionalFlowShader"
         _GridResolution_A ("Grid Resolution A", Float) = 40
         _WavePeriod_A ("Wave Period A", Float) = 1.578
         _FlowVelocityStrength_A ("Flow Velocity Strength A", Float) = 5
-        _HeightEdge_A ("Flow Velocity Strength A", Range(0, 1)) = 0.232
+        _HeightEdge_A ("Height Edge Strength A", Range(0, 1)) = 0.232
 
         [Header(Wave B)]
         _GridResolution_B ("Grid Resolution B", Float) = 60
         _WavePeriod_B ("Wave Period B", Float) = 1.36
         _FlowVelocityStrength_B ("Flow Velocity Strength B", Float) = 3.5
-        _HeightEdge_B ("Flow Velocity Strength B", Range(0, 1)) = 0.227
+        _HeightEdge_B ("Height Edge Strength B", Range(0, 1)) = 0.227
 
         [Header(Wave C)]
         _GridResolution_C ("Grid Resolution C", Float) = 70
         _WavePeriod_C ("Wave Period C", Float) = 1.66
         _FlowVelocityStrength_C ("Flow Velocity Strength C", Float) = 2.2
-        _HeightEdge_C ("Flow Velocity Strength C", Range(0, 1)) = 0.243
+        _HeightEdge_C ("Height Edge Strength C", Range(0, 1)) = 0.243
 
         [Header(Wave D)]
         _GridResolution_D ("Grid Resolution D", Float) = 50
         _WavePeriod_D ("Wave Period D", Float) = 2.54
         _FlowVelocityStrength_D ("Flow Velocity Strength D", Float) = 4.2
-        _HeightEdge_D ("Flow Velocity Strength D", Range(0, 1)) = 0.265
+        _HeightEdge_D ("Height Edge Strength D", Range(0, 1)) = 0.265
 
         [Header(Foam)]
         _FoamTexture ("Foam Texture", 2D) = "white" {}
