@@ -25,7 +25,7 @@ float2 RotateUV(float2 direction, float2 uv, float gridResolution, float flowVel
 
     float dirLength = length(direction);
     dirLength *= flowVelocityStrength;
-    float strength = _Time.y / dirLength;
+    float strength = _Time.y * dirLength;
 
     newUV = newUV * (gridResolution * wavePeriod) - float2(0, strength);
     return newUV;
