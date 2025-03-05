@@ -6,6 +6,7 @@ Shader "Unlit/DirectionalFlowDynamicShader"
         _DisplacementMap ("Displacement Map", 2D) = "white" {}
         _NormalMap ("Normal Map", 2D) = "white" {}
         _NormalStrength ("Normal Strength", Float) = 0.5
+        _HeightNoiseMap("Height Noise Map", 2D) = "white" {}
 
         [Header(FlowMap And WaterHeight)]
         _FlowMapBefore ("Flow Map (Before)", 2D) = "white" {}
@@ -99,6 +100,7 @@ Shader "Unlit/DirectionalFlowDynamicShader"
                 float4 _WaterHeightTextureBefore_ST;
                 float4 _WaterHeightTextureAfter_ST;
                 float4 _FoamTexture_ST;
+                float4 _HeightNoiseMap_ST;
 
                 float _NormalStrength;
                 float _TimeStep;
@@ -144,6 +146,7 @@ Shader "Unlit/DirectionalFlowDynamicShader"
             TEXTURE2D(_WaterHeightTextureBefore);   SAMPLER(sampler_WaterHeightTextureBefore);
             TEXTURE2D(_WaterHeightTextureAfter);    SAMPLER(sampler_WaterHeightTextureAfter);
             TEXTURE2D(_FoamTexture);            SAMPLER(sampler_FoamTexture);
+            TEXTURE2D(_HeightNoiseMap);             SAMPLER(sampler_HeightNoiseMap);
 
             Varyings vert (Attributes input)
             {
@@ -161,7 +164,6 @@ Shader "Unlit/DirectionalFlowDynamicShader"
                 return output;
             }
         
-
             float4 frag(Varyings input) : SV_Target
             {
                 float3 curNormal;
@@ -169,19 +171,19 @@ Shader "Unlit/DirectionalFlowDynamicShader"
                 float curDisplacement;
                 float finalDisplacement;
 
-                FlowCell(_FlowMapBefore, sampler_FlowMapBefore, _FlowMapAfter, sampler_FlowMapAfter, _NormalMap, sampler_NormalMap, _DisplacementMap, sampler_DisplacementMap, _TimeStep, input.uv, _GridResolution_A, _FlowVelocityStrength_A, _WavePeriod_A, curNormal, curDisplacement);
+                FlowCell(_FlowMapBefore, sampler_FlowMapBefore, _FlowMapAfter, sampler_FlowMapAfter, _NormalMap, sampler_NormalMap, _DisplacementMap, sampler_DisplacementMap, _HeightNoiseMap, sampler_HeightNoiseMap, _TimeStep, input.uv, _GridResolution_A, _FlowVelocityStrength_A, _WavePeriod_A, curNormal, curDisplacement);
                 finalNormal = curNormal;
                 finalDisplacement = smoothstep(_HeightEdge_A, 1.0, curDisplacement);
 
-                FlowCell(_FlowMapBefore, sampler_FlowMapBefore, _FlowMapAfter, sampler_FlowMapAfter, _NormalMap, sampler_NormalMap, _DisplacementMap, sampler_DisplacementMap, _TimeStep, input.uv, _GridResolution_B, _FlowVelocityStrength_B, _WavePeriod_B, curNormal, curDisplacement);
+                FlowCell(_FlowMapBefore, sampler_FlowMapBefore, _FlowMapAfter, sampler_FlowMapAfter, _NormalMap, sampler_NormalMap, _DisplacementMap, sampler_DisplacementMap, _HeightNoiseMap, sampler_HeightNoiseMap, _TimeStep, input.uv, _GridResolution_B, _FlowVelocityStrength_B, _WavePeriod_B, curNormal, curDisplacement);
                 finalNormal += curNormal;
                 finalDisplacement += smoothstep(_HeightEdge_B, 1.0, curDisplacement);
 
-                FlowCell(_FlowMapBefore, sampler_FlowMapBefore, _FlowMapAfter, sampler_FlowMapAfter, _NormalMap, sampler_NormalMap, _DisplacementMap, sampler_DisplacementMap, _TimeStep, input.uv, _GridResolution_C, _FlowVelocityStrength_C, _WavePeriod_C, curNormal, curDisplacement);
+                FlowCell(_FlowMapBefore, sampler_FlowMapBefore, _FlowMapAfter, sampler_FlowMapAfter, _NormalMap, sampler_NormalMap, _DisplacementMap, sampler_DisplacementMap, _HeightNoiseMap, sampler_HeightNoiseMap, _TimeStep, input.uv, _GridResolution_C, _FlowVelocityStrength_C, _WavePeriod_C, curNormal, curDisplacement);
                 finalNormal += curNormal;
                 finalDisplacement += smoothstep(_HeightEdge_C, 1.0, curDisplacement);
 
-                FlowCell(_FlowMapBefore, sampler_FlowMapBefore, _FlowMapAfter, sampler_FlowMapAfter, _NormalMap, sampler_NormalMap, _DisplacementMap, sampler_DisplacementMap, _TimeStep, input.uv, _GridResolution_D, _FlowVelocityStrength_D, _WavePeriod_D, curNormal, curDisplacement);
+                FlowCell(_FlowMapBefore, sampler_FlowMapBefore, _FlowMapAfter, sampler_FlowMapAfter, _NormalMap, sampler_NormalMap, _DisplacementMap, sampler_DisplacementMap, _HeightNoiseMap, sampler_HeightNoiseMap, _TimeStep, input.uv, _GridResolution_D, _FlowVelocityStrength_D, _WavePeriod_D, curNormal, curDisplacement);
                 finalNormal += curNormal;
                 finalDisplacement += smoothstep(_HeightEdge_D, 1.0, curDisplacement);
 
@@ -213,7 +215,7 @@ Shader "Unlit/DirectionalFlowDynamicShader"
 
                 float4 finalColor = diffuseColor;
 
-                // // 浪尖泡沫
+                // 浪尖泡沫
                 float foamValue = SAMPLE_TEXTURE2D(_FoamTexture, sampler_FoamTexture, input.uv * _FoamTexture_ST.xy).r;
                 foamValue = Remap(foamValue, float2(0, 1), float2(0.2, 1));
                 foamValue = foamValue * smoothstep(_FoamMinEdge, _FoamMaxEdge, finalDisplacement);

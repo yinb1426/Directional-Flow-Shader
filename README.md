@@ -24,6 +24,7 @@
 | NormalStrength | Float | 法线强度 | 0.7 |
 | FlowMap | 2D | 流向贴图 | |
 | WaterHeightTexture | 2D | 水深贴图 (也可以使用CG方法获取水深) | |
+| HeightNoiseMap | 2D | 水面高度噪声贴图 | |
 
 **水体颜色与水深**：
 | 参数 | 类型 | <center>说明</center> | 建议参考值 |
