@@ -1,6 +1,7 @@
 #ifndef _FLOW_CELL_HLSL
 #define _FLOW_CELL_HLSL
 
+// Multi-Flows Functions
 float2 GetFlowDirection(Texture2D flowMapBefore, SamplerState samplerFlowMapBefore, Texture2D flowMapAfter, SamplerState samplerFlowMapAfter,
                         float lerpValue, float2 uv, float2 offset, float gridResolution)
 {
@@ -36,6 +37,7 @@ void FlowCell(Texture2D flowMapBefore, SamplerState samplerFlowMapBefore,
               Texture2D normalMap, SamplerState samplerNormalMap,
               Texture2D displacementMap, SamplerState samplerDisplacementMap,
               Texture2D heightNoiseMap, SamplerState samplerHeightNoiseMap,
+              Texture2D heightNoiseNormalMap, SamplerState samplerHeightNoiseNormalMap,
               float lerpValue, float2 uv, float gridResolution, float flowVelocityStrength, float wavePeriod,
               out float3 finalNormal, out float finalDisplacement)
 {
@@ -49,26 +51,36 @@ void FlowCell(Texture2D flowMapBefore, SamplerState samplerFlowMapBefore,
     float2 newUV3 = RotateUV(dir3, uv, gridResolution, flowVelocityStrength, wavePeriod);
     float2 newUV4 = RotateUV(dir4, uv, gridResolution, flowVelocityStrength, wavePeriod);
 
-    float3 normal1 = SAMPLE_TEXTURE2D(normalMap, samplerNormalMap, newUV1).rgb * 2.0 - 1.0;
-    float3 normal2 = SAMPLE_TEXTURE2D(normalMap, samplerNormalMap, newUV2).rgb * 2.0 - 1.0;
-    float3 normal3 = SAMPLE_TEXTURE2D(normalMap, samplerNormalMap, newUV3).rgb * 2.0 - 1.0;
-    float3 normal4 = SAMPLE_TEXTURE2D(normalMap, samplerNormalMap, newUV4).rgb * 2.0 - 1.0;
-
     float displacement1 = SAMPLE_TEXTURE2D(displacementMap, samplerDisplacementMap, newUV1).r;
     float displacement2 = SAMPLE_TEXTURE2D(displacementMap, samplerDisplacementMap, newUV2).r;
     float displacement3 = SAMPLE_TEXTURE2D(displacementMap, samplerDisplacementMap, newUV3).r;
     float displacement4 = SAMPLE_TEXTURE2D(displacementMap, samplerDisplacementMap, newUV4).r;
+
+    float3 normal1 = UnpackNormal(SAMPLE_TEXTURE2D(normalMap, samplerNormalMap, newUV1));
+    float3 normal2 = UnpackNormal(SAMPLE_TEXTURE2D(normalMap, samplerNormalMap, newUV2));
+    float3 normal3 = UnpackNormal(SAMPLE_TEXTURE2D(normalMap, samplerNormalMap, newUV3));
+    float3 normal4 = UnpackNormal(SAMPLE_TEXTURE2D(normalMap, samplerNormalMap, newUV4));
 
     float noise1 = SAMPLE_TEXTURE2D(heightNoiseMap, samplerHeightNoiseMap, newUV1).r;
     float noise2 = SAMPLE_TEXTURE2D(heightNoiseMap, samplerHeightNoiseMap, newUV2).r;
     float noise3 = SAMPLE_TEXTURE2D(heightNoiseMap, samplerHeightNoiseMap, newUV3).r;
     float noise4 = SAMPLE_TEXTURE2D(heightNoiseMap, samplerHeightNoiseMap, newUV4).r;
 
+    float3 noiseNormal1 = UnpackNormal(SAMPLE_TEXTURE2D(heightNoiseNormalMap, samplerHeightNoiseNormalMap, newUV1));
+    float3 noiseNormal2 = UnpackNormal(SAMPLE_TEXTURE2D(heightNoiseNormalMap, samplerHeightNoiseNormalMap, newUV2));
+    float3 noiseNormal3 = UnpackNormal(SAMPLE_TEXTURE2D(heightNoiseNormalMap, samplerHeightNoiseNormalMap, newUV3));
+    float3 noiseNormal4 = UnpackNormal(SAMPLE_TEXTURE2D(heightNoiseNormalMap, samplerHeightNoiseNormalMap, newUV4));
+
     displacement1 = (displacement1 + noise1) / 2.0;
     displacement2 = (displacement2 + noise2) / 2.0;
     displacement3 = (displacement3 + noise3) / 2.0;
     displacement4 = (displacement4 + noise4) / 2.0;
     
+    normal1 = normalize(normal1 + noiseNormal1);
+    normal2 = normalize(normal2 + noiseNormal2);
+    normal3 = normalize(normal3 + noiseNormal3);
+    normal4 = normalize(normal4 + noiseNormal4);
+
     float2 uvFrac = frac(uv * gridResolution);
     uvFrac *= 2 * PI;
     uvFrac = cos(uvFrac) * 0.5 + 0.5;
@@ -82,6 +94,7 @@ void FlowCell(Texture2D flowMapBefore, SamplerState samplerFlowMapBefore,
     finalDisplacement = w1 * displacement1 + w2 * displacement2 + w3 * displacement3 + w4 * displacement4;
 }
 
+// Single-Flow Functions
 float2 GetFlowDirection(Texture2D flowMap, SamplerState samplerFlowMap, float2 uv, float2 offset, float gridResolution)
 {
     uv *= gridResolution;
